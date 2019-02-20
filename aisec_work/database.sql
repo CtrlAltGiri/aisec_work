@@ -9,6 +9,5 @@ create table login(
 	clg varchar(10) not null,
 	name varchar(30) not null,
 	email varchar(30) not null,
-	login boolean default 0,
-	name varchar()
-	)
+	login boolean default 0
+	);

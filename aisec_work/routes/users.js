@@ -1,43 +1,59 @@
-const db = require("../utils/response.js");
+const to = require("../utils/to.js");
+const db = require("../config/conn.js");
+var bcrypt = require("bcryptjs");
+
 
 let exp = {};
 
-/* GET users listing. */
-router.get("/", function(req, res, next) {
-	res.send("respond with a resource");
-});
 
-exp.login = async (res, req) => {
-	//not putting anyu facilities in the code
+
+exp.login = async (req, res) => {
+	//not putting any facilities in the code
 	//prett straight-forward
 	//need to use salt and hash
-	let uname, upass, qry, err, result;
+
+	console.log("hello");
+
+	let uname, ass, qry, err, result;
 	uname = req.body.uname;
-	pass = req.body.pass;
+	pass = req.body.upass;
+
+	console.log(uname,pass);
+
+	
+	pass=bcrypt.hash(pass,10);
+
 	if (uname && pass) {
-		qry = "select count(*) from login where uname = ? and pass = ? and status = 0";
-		[err, result] = await to(db.query(qry, [uname, pass]));
-		if (err) {
+		let qrr = `select * from login where uname=? and pass=? and login=0`;
+		let query = db.query(qrr,[uname,pass],(err_q,result)=>{
+		if (err_q) {
 			console.log("could not retrieve the result");
 			return res.sendError(err);
 		}
-
-		let count = result[0];
-		if (count !=1 ) {
+		if (!result) {
+			console.log(result);
 			console.log("wrong details");
 			return res.sendError("not found");
-		} else if (count == 1) {
-			qry = "update login set status = 1 where uname = ? and pass = ?"; //logged in..cant login later
-			[err, result] = await to(db.query(qry, [uname, pass]));
-			if (err) {
-				console.log(err);
-				return res.sendError(err);
-			}
+		} else if (result[0]['c'] == 1) {
+			qry2 = `update login set status = 1 where uname = ? and pass = ?`; //logged in..cant login later
+			let query2 = db.query(qry2,[uname,pass],(err_q,result)=>{
+				if (err) {
+					console.log("could not retrieve the result");
+					return res.sendError(err);
+				}
+				else{
+					console.log("success");
+				}
+			});
 
-			//redirect to question paper page
-			return res.sendSuccess(count,"Login Successfull" );
 		}
-	} else {
+		else{
+			console.log("error");
+		}
+		
+	}); 
+	}
+else {
 		return res.sendError("no values inserted");
 	}
 };
@@ -59,7 +75,7 @@ exp.registeration = async (res,req) => {
 
 	if(uname && clg && pass && reg && email && name && time_slot) {
 		//enter into register
-		qry = "insert into login(uname,clg,pass,reg,email,name,time_slot values(?,?,?,?,?,?,?))";
+		qry = `insert into login(uname,clg,pass,reg,email,name,time_slot values(?,?,?,?,?,?,?))`;
 		[err,result] = await to(db.query(qry,[uname,clg,pass,reg,email,name,time_slot]));
 		if(err)
 		{
