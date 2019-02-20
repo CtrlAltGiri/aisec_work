@@ -1,13 +1,10 @@
-const db = require("../utils/response.js");
+const response = require("../utils/response.js");
+const to = require("../utils/to.js");
 
 let exp = {};
 
-/* GET users listing. */
-router.get("/", function(req, res, next) {
-	res.send("respond with a resource");
-});
-
-exp.StudentLogin = async (res, req) => {
+//hashing left and redirection left
+exp.StudentLogin = async (req, res) => {
 	//not putting anyu facilities in the code
 	//prett straight-forward
 	//need to use salt and hash
@@ -42,19 +39,37 @@ exp.StudentLogin = async (res, req) => {
 	}
 };
 
-exp.AdminLogin = async (res,req) => {
+//hashing and sending to new page left
+exp.AdminLogin = async (req,res) => {
 
 	let uname,pass,qry,result;
 	
 	uname = req.body.uname;
 	pass = req.body.pass;
+	//hashing left
+
 
 	qry = "select count(*) from admin where uname =? and pass =?";
 	[err,result] = await to(db.query(qry,[uname,pass]));
 	
+	if(err)
+	{
+		console.log("error while running query");
+		return res.sendError(err);
+	}
+	
+	let count = result[0];
+	if(count == 1)
+	{
+		//redirect to results page
+		return res.sendSuccess("log in Successfull",count);
+	}
+
+	console.log("wrong username or password");
+	return res.sendError(err)
 };
 
-exp.registeration = async (res,req) => {
+exp.registeration = async (req,res) => {
 	
 	let uname, clg, pass, reg, email, name, time_slot, phno,qry, reult, err;
 	
