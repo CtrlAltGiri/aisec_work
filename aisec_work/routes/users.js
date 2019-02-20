@@ -7,7 +7,7 @@ router.get("/", function(req, res, next) {
 	res.send("respond with a resource");
 });
 
-exp.login = async (res, req) => {
+exp.StudentLogin = async (res, req) => {
 	//not putting anyu facilities in the code
 	//prett straight-forward
 	//need to use salt and hash
@@ -42,6 +42,18 @@ exp.login = async (res, req) => {
 	}
 };
 
+exp.AdminLogin = async (res,req) => {
+
+	let uname,pass,qry,result;
+	
+	uname = req.body.uname;
+	pass = req.body.pass;
+
+	qry = "select count(*) from admin where uname =? and pass =?";
+	[err,result] = await to(db.query(qry,[uname,pass]));
+	
+};
+
 exp.registeration = async (res,req) => {
 	
 	let uname, clg, pass, reg, email, name, time_slot, phno,qry, reult, err;
@@ -53,11 +65,12 @@ exp.registeration = async (res,req) => {
 	email = req.body.email;
 	name = req.body.name;
 	time_slot = req.body.time_slot;
+	phno = req.body.phno;	
 
 	//need to add salt and hashing of password
 	//need to add re_captcha
 
-	if(uname && clg && pass && reg && email && name && time_slot) {
+	if(uname && clg && pass && reg && email && name && time_slot && phno) {
 		//enter into register
 		qry = "insert into login(uname,clg,pass,reg,email,name,time_slot values(?,?,?,?,?,?,?))";
 		[err,result] = await to(db.query(qry,[uname,clg,pass,reg,email,name,time_slot]));
@@ -67,10 +80,15 @@ exp.registeration = async (res,req) => {
 			return res,sendError(err);
 		}
 
-	}else {
-		console.log("enter all details");
-		return res.sendError("enter all details");
+		console.log("values inserted(registeration)");
+		return res.sendSuccess(uname,"registered Successfully");
+
 	}
-}
+	else {
+			console.log("enter all details");
+			return res.sendError("enter all details");
+	}
+
+};
 
 module.exports = exp;

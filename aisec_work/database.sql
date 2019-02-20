@@ -11,4 +11,9 @@ create table login(
 	email varchar(30) not null,
 	login boolean default 0,
 	name varchar()
-	)
+);
+
+create table admin(
+	uname varchar(20) not null,
+	pass varchar(20) not null	
+);
