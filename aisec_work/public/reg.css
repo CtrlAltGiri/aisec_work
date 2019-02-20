@@ -1,0 +1,25 @@
+html body {
+	background-color: #037Ef3;
+}
+
+#override .container-fluid{
+	margin-top: 100px;
+	background-color: #fff;
+	max-width: 355px;
+	border-radius: 4px;
+	box-shadow: 0 5px 16px 0 rgba(29,33,41,0.5);
+}
+#icon{
+	background-color: #037Ef3;
+	text-align: center;
+	height: 45px;
+	width:100%;
+}
+
+#icon_head{
+	padding:0;
+}
+
+img {
+	margin-top: 6px
+}
