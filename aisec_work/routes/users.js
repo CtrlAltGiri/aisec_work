@@ -44,7 +44,7 @@ exp.login = async (res, req) => {
 
 exp.registeration = async (res,req) => {
 	
-	let uname, clg, pass, reg, email, name, time_slot, phno qry, reult, err;
+	let uname, clg, pass, reg, email, name, time_slot, phno,qry, reult, err;
 	
 	uname = req.body.uname;
 	clg = req.body.clg;
@@ -71,6 +71,6 @@ exp.registeration = async (res,req) => {
 		console.log("enter all details");
 		return res.sendError("enter all details");
 	}
-
-
 }
+
+module.exports = exp;
