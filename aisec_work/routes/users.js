@@ -1,4 +1,5 @@
-const db = require("../config/conn.js");
+const db = require("../utils/response.js");
+
 let exp = {};
 
 /* GET users listing. */
@@ -14,7 +15,7 @@ exp.login = async (res, req) => {
 	uname = req.body.uname;
 	pass = req.body.pass;
 	if (uname && pass) {
-		qry = "select count(*) from login where uname = ? and pass = ?";
+		qry = "select count(*) from login where uname = ? and pass = ? and status = 0";
 		[err, result] = await to(db.query(qry, [uname, pass]));
 		if (err) {
 			console.log("could not retrieve the result");
@@ -22,12 +23,12 @@ exp.login = async (res, req) => {
 		}
 
 		let count = result[0];
-		if (count == 0) {
+		if (count !=1 ) {
 			console.log("wrong details");
 			return res.sendError("not found");
 		} else if (count == 1) {
-			qry = "update login set status = 1";
-			[err, result] = await to(db.query(qry));
+			qry = "update login set status = 1 where uname = ? and pass = ?"; //logged in..cant login later
+			[err, result] = await to(db.query(qry, [uname, pass]));
 			if (err) {
 				console.log(err);
 				return res.sendError(err);
@@ -42,18 +43,31 @@ exp.login = async (res, req) => {
 };
 
 exp.registeration = async (res,req) => {
+	
 	let uname, clg, pass, reg, email, name, time_slot, phno qry, reult, err;
+	
 	uname = req.body.uname;
 	clg = req.body.clg;
 	pass = req.body.pass;
 	reg = req.body.registeration;
-	
-	if(uname && clg && pass && reg)
-	{
+	email = req.body.email;
+	name = req.body.name;
+	time_slot = req.body.time_slot;
 
-	}
-	else
-	{
+	//need to add salt and hashing of password
+	//need to add re_captcha
+
+	if(uname && clg && pass && reg && email && name && time_slot) {
+		//enter into register
+		qry = "insert into login(uname,clg,pass,reg,email,name,time_slot values(?,?,?,?,?,?,?))";
+		[err,result] = await to(db.query(qry,[uname,clg,pass,reg,email,name,time_slot]));
+		if(err)
+		{
+			console.log(err);
+			return res,sendError(err);
+		}
+
+	}else {
 		console.log("enter all details");
 		return res.sendError("enter all details");
 	}
