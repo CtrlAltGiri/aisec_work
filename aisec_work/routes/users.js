@@ -6,8 +6,6 @@ let exp = {};
 
 //hashing left and redirection left
 exp.StudentLogin = async (req, res) => {
-	//not putting anyu facilities in the code
-	//prett straight-forward
 	//need to use salt and hash
 	let uname, upass, qry, err, result;
 	uname = req.body.uname;
@@ -51,6 +49,7 @@ exp.AdminLogin = async (req, res) => {
 
 	uname = req.body.uname;
 	pass = req.body.pass;
+
 	//hashing left
 	if(uname && pass)
 	{
@@ -92,14 +91,6 @@ exp.registration = async (req, res) => {
 	phno = req.body.phno;
 
 	//need to add salt and hashing of password
-	// console.log(uname);
-	// console.log(clg);
-	// console.log(pass);
-	// console.log(reg);
-	// console.log(email);
-	// console.log(name);
-	// console.log(time_slot);
-	// console.log(phno);
 
 	if (uname && clg && pass && reg && email && name && time_slot && phno) {
 		//enter into register
