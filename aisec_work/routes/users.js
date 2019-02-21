@@ -12,22 +12,24 @@ exp.StudentLogin = async (req, res) => {
 	let uname, upass, qry, err, result;
 	uname = req.body.uname;
 	pass = req.body.pass;
-
+	
+	// console.log(uname);
 	if (uname && pass) {
 		qry =
-			"select count(*) from login where uname = ? and pass = ? and status = 0";
+			"select count(*) as count from login where uname = ? and pass = ? and login = 0";
 		[err, result] = await to(db.query(qry, [uname, pass]));
+		// console.log("inside uname and pass");
 		if (err) {
 			console.log("could not retrieve the result");
 			return res.sendError(err);
 		}
-
-		let count = result[0];
+		
+		let count = result[0]['count'];
 		if (count != 1) {
 			console.log("wrong details");
 			return res.sendError("not found");
 		} else if (count == 1) {
-			qry = "update login set status = 1 where uname = ? and pass = ?"; //logged in..cant login later
+			qry = "update login set login = 1 where uname = ? and pass = ?"; //logged in..cant login later
 			[err, result] = await to(db.query(qry, [uname, pass]));
 			if (err) {
 				console.log(err);
@@ -38,7 +40,8 @@ exp.StudentLogin = async (req, res) => {
 			return res.sendSuccess(count, "Login Successfull");
 		}
 	} else {
-		return res.sendError("no values inserted");
+		return res.sendError("no values inserted in uname and pass");
+
 	}
 };
 

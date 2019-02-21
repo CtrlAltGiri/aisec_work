@@ -10,7 +10,7 @@ const passport = require('passport');
 const response = require('./utils/response');
 const routes = require('./routes');
 
-const passport = require('passport');
+const app = express();
 
 require('./config/passport')(passport);
 

@@ -1,4 +1,4 @@
-const db = require("../config.conn.js");
+const db = require("../config/conn.js");
 const to = require("../utils/to.js");
 const response = require("../utils/response.js");
 

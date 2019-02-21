@@ -19,7 +19,7 @@ create table admin(
 );
 
 create table result(
-	login_id references login primary key,
+	login_id primary key,
 	q1 varchar(30),
 	q2 varchar(30),
 	q3 varchar(30),
@@ -32,5 +32,5 @@ create table result(
 	q10 varchar(30),
 	essay1 mediumtext,
 	essay2 mediumtext,
-	essay3 mediumtext
+	essay3 mediumtext,
 );
