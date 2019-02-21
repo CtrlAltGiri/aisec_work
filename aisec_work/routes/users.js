@@ -1,5 +1,6 @@
 const response = require("../utils/response.js");
 const to = require("../utils/to.js");
+const db = require("../config/conn.js");
 
 let exp = {};
 
@@ -11,8 +12,10 @@ exp.StudentLogin = async (req, res) => {
 	let uname, upass, qry, err, result;
 	uname = req.body.uname;
 	pass = req.body.pass;
+
 	if (uname && pass) {
-		qry = "select count(*) from login where uname = ? and pass = ? and status = 0";
+		qry =
+			"select count(*) from login where uname = ? and pass = ? and status = 0";
 		[err, result] = await to(db.query(qry, [uname, pass]));
 		if (err) {
 			console.log("could not retrieve the result");
@@ -20,7 +23,7 @@ exp.StudentLogin = async (req, res) => {
 		}
 
 		let count = result[0];
-		if (count !=1 ) {
+		if (count != 1) {
 			console.log("wrong details");
 			return res.sendError("not found");
 		} else if (count == 1) {
@@ -32,7 +35,7 @@ exp.StudentLogin = async (req, res) => {
 			}
 
 			//redirect to question paper page
-			return res.sendSuccess(count,"Login Successfull" );
+			return res.sendSuccess(count, "Login Successfull");
 		}
 	} else {
 		return res.sendError("no values inserted");
@@ -40,39 +43,34 @@ exp.StudentLogin = async (req, res) => {
 };
 
 //hashing and sending to new page left
-exp.AdminLogin = async (req,res) => {
+exp.AdminLogin = async (req, res) => {
+	let uname, pass, qry, result;
 
-	let uname,pass,qry,result;
-	
 	uname = req.body.uname;
 	pass = req.body.pass;
 	//hashing left
 
-
 	qry = "select count(*) from admin where uname =? and pass =?";
-	[err,result] = await to(db.query(qry,[uname,pass]));
-	
-	if(err)
-	{
+	[err, result] = await to(db.query(qry, [uname, pass]));
+
+	if (err) {
 		console.log("error while running query");
 		return res.sendError(err);
 	}
-	
+
 	let count = result[0];
-	if(count == 1)
-	{
+	if (count == 1) {
 		//redirect to results page
-		return res.sendSuccess("log in Successfull",count);
+		return res.sendSuccess("log in Successfull", count);
 	}
 
 	console.log("wrong username or password");
-	return res.sendError(err)
+	return res.sendError(err);
 };
 
-exp.registeration = async (req,res) => {
-	
-	let uname, clg, pass, reg, email, name, time_slot, phno,qry, reult, err;
-	
+exp.registration = async (req, res) => {
+	let uname, clg, pass, reg, email, name, time_slot, phno, qry, reult, err;
+
 	uname = req.body.uname;
 	clg = req.body.clg;
 	pass = req.body.pass;
@@ -80,30 +78,29 @@ exp.registeration = async (req,res) => {
 	email = req.body.email;
 	name = req.body.name;
 	time_slot = req.body.time_slot;
-	phno = req.body.phno;	
+	phno = req.body.phno;
 
 	//need to add salt and hashing of password
 	//need to add re_captcha
 
-	if(uname && clg && pass && reg && email && name && time_slot && phno) {
+	if (uname && clg && pass && reg && email && name && time_slot && phno) {
 		//enter into register
-		qry = "insert into login(uname,clg,pass,reg,email,name,time_slot values(?,?,?,?,?,?,?))";
-		[err,result] = await to(db.query(qry,[uname,clg,pass,reg,email,name,time_slot]));
-		if(err)
-		{
+		qry =
+			"insert into login(uname,clg,pass,reg,email,name,time_slot values(?,?,?,?,?,?,?))";
+		[err, result] = await to(
+			db.query(qry, [uname, clg, pass, reg, email, name, time_slot])
+		);
+		if (err) {
 			console.log(err);
-			return res,sendError(err);
+			return res, sendError(err);
 		}
 
 		console.log("values inserted(registeration)");
-		return res.sendSuccess(uname,"registered Successfully");
-
+		return res.sendSuccess(uname, "registered Successfully");
+	} else {
+		console.log("enter all details");
+		return res.sendError("enter all details");
 	}
-	else {
-			console.log("enter all details");
-			return res.sendError("enter all details");
-	}
-
 };
 
 module.exports = exp;
