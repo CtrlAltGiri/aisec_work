@@ -1,5 +1,6 @@
-body{
+#override {
 	font-family: 'Lato';
+	background-color:#037Ef3; 
 }
 
 #logo{
@@ -15,4 +16,20 @@ body{
 
 .navbar{
 	background-color:#037Ef3; 
+}
+
+form{
+margin-top: 30px;
+}
+
+#override .container{
+
+	background-color: #fff;
+	border-radius: 4px;
+	box-shadow: 0 5px 16px 0 rgba(29,33,41,0.5);
+	padding: 0;
+	line-height: 50px;
+}
+form{
+	padding: 15px;
 }

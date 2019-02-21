@@ -23,3 +23,10 @@ html body {
 img {
 	margin-top: 6px
 }
+#login {
+	text-align: center;
+	margin-top: 10px;
+	margin-bottom: 30px;
+	color: #037Ef3;
+	font-style: oblique;
+}
