@@ -13,12 +13,12 @@ exp.StudentLogin = async (req, res) => {
 	uname = req.body.uname;
 	pass = req.body.pass;
 	
-	// console.log(uname);
+	//just do hashing here
 	if (uname && pass) {
 		qry =
 			"select count(*) as count from login where uname = ? and pass = ? and login = 0";
 		[err, result] = await to(db.query(qry, [uname, pass]));
-		// console.log("inside uname and pass");
+		
 		if (err) {
 			console.log("could not retrieve the result");
 			return res.sendError(err);
@@ -52,23 +52,31 @@ exp.AdminLogin = async (req, res) => {
 	uname = req.body.uname;
 	pass = req.body.pass;
 	//hashing left
+	if(uname && pass)
+	{
+		qry = "select count(*) as count from admin where uname =? and pass =?";
+		[err, result] = await to(db.query(qry, [uname, pass]));
 
-	qry = "select count(*) from admin where uname =? and pass =?";
-	[err, result] = await to(db.query(qry, [uname, pass]));
+		//just do hasing here
+		if (err) {
+			console.log("error while running query");
+			return res.sendError(err);
+		}
 
-	if (err) {
-		console.log("error while running query");
+		let count = result[0]['count'];
+		if (count == 1) {
+			//redirect to results page
+			return res.sendSuccess("log in Successfull", count);
+		}
+
+		console.log("wrong username or password");
 		return res.sendError(err);
 	}
-
-	let count = result[0];
-	if (count == 1) {
-		//redirect to results page
-		return res.sendSuccess("log in Successfull", count);
+	else
+	{
+		console.log("no entry available in uname and pass");
+		return res.sendError("no value");
 	}
-
-	console.log("wrong username or password");
-	return res.sendError(err);
 };
 
 exp.registration = async (req, res) => {
@@ -77,25 +85,32 @@ exp.registration = async (req, res) => {
 	uname = req.body.uname;
 	clg = req.body.clg;
 	pass = req.body.pass;
-	reg = req.body.registeration;
+	reg = req.body.registration;
 	email = req.body.email;
 	name = req.body.name;
 	time_slot = req.body.time_slot;
 	phno = req.body.phno;
 
 	//need to add salt and hashing of password
-	//need to add re_captcha
+	// console.log(uname);
+	// console.log(clg);
+	// console.log(pass);
+	// console.log(reg);
+	// console.log(email);
+	// console.log(name);
+	// console.log(time_slot);
+	// console.log(phno);
 
 	if (uname && clg && pass && reg && email && name && time_slot && phno) {
 		//enter into register
 		qry =
-			"insert into login(uname,clg,pass,reg,email,name,time_slot values(?,?,?,?,?,?,?))";
+			"insert into login(uname,clg,pass,reg_no,email,name,time_slot,phno) values(?,?,?,?,?,?,?,?)";
 		[err, result] = await to(
-			db.query(qry, [uname, clg, pass, reg, email, name, time_slot])
+			db.query(qry, [uname, clg, pass, reg, email, name, time_slot, phno])
 		);
 		if (err) {
 			console.log(err);
-			return res, sendError(err);
+			return res.sendError(err);
 		}
 
 		console.log("values inserted(registeration)");
