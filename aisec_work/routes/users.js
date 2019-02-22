@@ -34,6 +34,17 @@ exp.StudentLogin = async (req, res) => {
 				return res.sendError(err);
 			}
 
+			qry = "select id from user where uname = ? and pass = ?";
+			[err,result] = await to(db.query(qry,[uname,pass]));
+			if(err)
+			{
+				console.log(err);
+				return res.sendError(err);
+			}
+
+			req.session.id = result[0]['id'];
+			console.log(req.session.id);
+			
 			//redirect to question paper page
 			return res.sendSuccess(count, "Login Successfull");
 		}
