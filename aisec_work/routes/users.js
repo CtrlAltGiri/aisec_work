@@ -14,7 +14,7 @@ exp.StudentLogin = async (req, res) => {
 	//just do hashing here
 	if (uname && pass) {
 		qry =
-			"select count(*) as count from login where uname = ? and pass = ? and login = 0";
+			"select count(*) as count from user where uname = ? and pass = ? and login = 0";
 		[err, result] = await to(db.query(qry, [uname, pass]));
 		
 		if (err) {
@@ -27,7 +27,7 @@ exp.StudentLogin = async (req, res) => {
 			console.log("wrong details");
 			return res.sendError("not found");
 		} else if (count == 1) {
-			qry = "update login set login = 1 where uname = ? and pass = ?"; //logged in..cant login later
+			qry = "update user set login = 1 where uname = ? and pass = ?"; //logged in..cant login later
 			[err, result] = await to(db.query(qry, [uname, pass]));
 			if (err) {
 				console.log(err);
@@ -95,7 +95,7 @@ exp.registration = async (req, res) => {
 	if (uname && clg && pass && reg && email && name && time_slot && phno) {
 		//enter into register
 		qry =
-			"insert into login(uname,clg,pass,reg_no,email,name,time_slot,phno) values(?,?,?,?,?,?,?,?)";
+			"insert into user(uname,clg,pass,reg_no,email,name,time_slot,phno) values(?,?,?,?,?,?,?,?)";
 		[err, result] = await to(
 			db.query(qry, [uname, clg, pass, reg, email, name, time_slot, phno])
 		);

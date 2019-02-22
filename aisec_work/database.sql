@@ -2,7 +2,7 @@ create database aiesec;
 
 use aiesec;
 
-create table login(
+create table user(
 	id int(5) auto_increment not null primary key, 
 	reg_no varchar(15) not null,
 	uname varchar(20) not null,
