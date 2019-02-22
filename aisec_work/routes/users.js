@@ -1,6 +1,9 @@
 const response = require("../utils/response.js");
 const to = require("../utils/to.js");
 const db = require("../config/conn.js");
+const moment = require("moment");
+const bcrypt = require("bcryptjs");
+
 
 let exp = {};
 
@@ -11,76 +14,88 @@ exp.StudentLogin = async (req, res) => {
 	uname = req.body.uname;
 	pass = req.body.pass;
 	
-	//just do hashing here
+	//according to actual time utc = current time - 5:30
+	if(moment().isBefore('2019-02-25T12:30:00Z'))
+	{   
+		console.log(moment());
+		console.log("not yet time");
+		return res.sendError("not yet");
+		//redirect to waiting page
+	}
+
+	console.log(uname,pass);
 	if (uname && pass) {
-		qry =
-			"select count(*) as count from user where uname = ? and pass = ? and login = 0";
-		[err, result] = await to(db.query(qry, [uname, pass]));
 		
-		if (err) {
-			console.log("could not retrieve the result");
+		qry = "select * from user where uname =? and login =0";
+		[err,result] = await to(db.query(qry,[uname]));
+		if(err)
+		{
+			console.log(err);
 			return res.sendError(err);
 		}
-		
-		let count = result[0]['count'];
-		if (count != 1) {
+
+		let encrypt = result[0]['pass'];
+
+		if(!bcrypt.compare(encrypt,pass))
+		{
 			console.log("wrong details");
-			return res.sendError("not found");
-		} else if (count == 1) {
-			qry = "update user set login = 1 where uname = ? and pass = ?"; //logged in..cant login later
-			[err, result] = await to(db.query(qry, [uname, pass]));
-			if (err) {
-				console.log(err);
-				return res.sendError(err);
-			}
-
-			qry = "select id from user where uname = ? and pass = ?";
-			[err,result] = await to(db.query(qry,[uname,pass]));
-			if(err)
-			{
-				console.log(err);
-				return res.sendError(err);
-			}
-
-			req.session.id = result[0]['id'];
-			console.log(req.session.id);
-			
-			//redirect to question paper page
-			return res.sendSuccess(count, "Login Successfull");
+			return res.sendError(err);
 		}
+
+		qry = "update user set login = 1 where uname = ? and login = 0"; //logged in..cant login later
+		[err, result] = await to(db.query(qry, [uname]));
+		if (err) {
+			console.log(err);
+			return res.sendError(err);
+		}
+
+		qry = "select * from user where uname = ?";
+		[err,result] = await to(db.query(qry,[uname]));
+
+		req.session.id = result[0]['id'];
+		req.session.reg = result[0]['reg_no'];
+		
+		//redirect to question paper page
+		return res.sendSuccess(req.session.id, "Login Successfull");
+		
 	} else {
 		return res.sendError("no values inserted in uname and pass");
 
 	}
 };
 
-//hashing and sending to new page left
 exp.AdminLogin = async (req, res) => {
 	let uname, pass, qry, result;
 
 	uname = req.body.uname;
 	pass = req.body.pass;
 
-	//hashing left
+	
 	if(uname && pass)
 	{
-		qry = "select count(*) as count from admin where uname =? and pass =?";
-		[err, result] = await to(db.query(qry, [uname, pass]));
 
-		//just do hasing here
-		if (err) {
-			console.log("error while running query");
+		qry = "select * from admin where uname =?";
+		[err,result] = await to(db.query(qry,[uname]));
+		if(err)
+		{
+			console.log(err);
 			return res.sendError(err);
 		}
 
-		let count = result[0]['count'];
-		if (count == 1) {
-			//redirect to results page
-			return res.sendSuccess("log in Successfull", count);
+		let encrypt = result[0]['pass'];
+
+
+		if(!bcrypt.compare(encrypt,pass))
+		{
+			console.log("wrong details");
+			return res.sendError(err);
 		}
 
-		console.log("wrong username or password");
-		return res.sendError(err);
+		console.log("correction");
+
+		//redirection to registration
+		return res.sendSuccess("yahoo",result[0]);
+		
 	}
 	else
 	{
@@ -101,9 +116,19 @@ exp.registration = async (req, res) => {
 	time_slot = req.body.time_slot;
 	phno = req.body.phno;
 
-	//need to add salt and hashing of password
 
 	if (uname && clg && pass && reg && email && name && time_slot && phno) {
+
+		[err,pass1] = await to(bcrypt.hash(pass,10));
+		if(err)
+		{
+			console.log(err)
+			return res.sendError(err);
+
+		}
+		pass = pass1;
+		console.log(pass);
+
 		//enter into register
 		qry =
 			"insert into user(uname,clg,pass,reg_no,email,name,time_slot,phno) values(?,?,?,?,?,?,?,?)";
