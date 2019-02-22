@@ -1,8 +1,6 @@
 
 var submit=document.querySelector("#sub");
-var sec=1*1000
-var minute=60*sec
-var hour=60*minute
+var hour=60*60*1000;
 
 setTimeout('Sub()',hour);
 
