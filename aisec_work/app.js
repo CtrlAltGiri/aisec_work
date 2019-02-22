@@ -14,8 +14,7 @@ const app = express();
 
 require('./config/passport')(passport);
 
-app.use(passport.initialize());
-app.use(passport.session());
+app.use(session({secret: config.get('SESSION_SECRET_KEY')}));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
