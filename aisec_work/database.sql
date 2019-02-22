@@ -7,7 +7,7 @@ use aiesec;
 create table user(
 	id int(5) auto_increment not null primary key, 
 	reg_no varchar(15) not null,
-	uname varchar(20) not null,
+	uname varchar(20) unqiue not null,
 	pass varchar(300) not null,
 	clg varchar(10) not null,
 	name varchar(30) not null,
