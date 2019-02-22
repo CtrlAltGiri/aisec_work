@@ -4,6 +4,8 @@ require('dotenv').config({ path: path.join(__dirname, '.env') });
 const express = require('express');
 const bodyParser = require('body-parser');
 
+const config = require('config');
+
 const session = require('express-session');
 const passport = require('passport');
 
