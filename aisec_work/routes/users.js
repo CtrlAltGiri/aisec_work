@@ -15,7 +15,7 @@ exp.StudentLogin = async (req, res) => {
 	pass = req.body.pass;
 	
 	//according to actual time utc = current time - 5:30
-	if(moment().isBefore('2019-02-25T12:30:00Z'))
+	if(moment().isBefore('2019-02-22T16:30:00Z'))
 	{   
 		console.log(moment());
 		console.log("not yet time");
@@ -28,11 +28,14 @@ exp.StudentLogin = async (req, res) => {
 		
 		qry = "select * from user where uname =? and login =0";
 		[err,result] = await to(db.query(qry,[uname]));
-		if(err)
+
+		if(err || !result[0])
 		{
 			console.log(err);
+			console.log(result[0]);
 			return res.sendError(err);
 		}
+
 
 		let encrypt = result[0]['pass'];
 
@@ -51,6 +54,12 @@ exp.StudentLogin = async (req, res) => {
 
 		qry = "select * from user where uname = ?";
 		[err,result] = await to(db.query(qry,[uname]));
+
+		if(err)
+		{
+			console.log(err);
+			return res.sendError(err);
+		}
 
 		req.session.id = result[0]['id'];
 		req.session.reg = result[0]['reg_no'];
@@ -76,7 +85,7 @@ exp.AdminLogin = async (req, res) => {
 
 		qry = "select * from admin where uname =?";
 		[err,result] = await to(db.query(qry,[uname]));
-		if(err)
+		if(err || !result[0])
 		{
 			console.log(err);
 			return res.sendError(err);
