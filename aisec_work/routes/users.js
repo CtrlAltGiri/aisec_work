@@ -15,7 +15,7 @@ exp.StudentLogin = async (req, res) => {
 	pass = req.body.pass;
 	
 	//according to actual time utc = current time - 5:30
-	if(moment().isBefore('2019-02-22T16:30:00Z'))
+	if(moment().isBefore('2019-02-25T12:30:00Z'))
 	{   
 		console.log(moment());
 		console.log("not yet time");
