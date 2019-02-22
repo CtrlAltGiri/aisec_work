@@ -1,0 +1,10 @@
+{
+    "DATABASE" : {
+        "host" : "localhost",
+        "user" : "root",
+        "pass" : "12345678",
+        "dbname" : "hfspdb"
+    },
+    "SESSION_SECRET_KEY" : "VuP9JPIiQ9Wz35wKbnU5Ej6e4xZv03TEvq9NRpUE",
+    "QR_ENCRYPTION_KEY" : "wjlSnUfWeiabvYKHdzCd"
+}
