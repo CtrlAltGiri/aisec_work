@@ -15,13 +15,13 @@ exp.StudentLogin = async (req, res) => {
 	pass = req.body.pass;
 	
 	//according to actual time utc = current time - 5:30
-	if(moment().isBefore('2019-02-25T12:30:00Z'))
-	{   
-		console.log(moment());
-		console.log("not yet time");
-		return res.sendError("not yet");
-		//redirect to waiting page
-	}
+	// if(moment().isBefore('2019-02-25T12:30:00Z'))
+	// {   
+	// 	console.log(moment());
+	// 	console.log("not yet time");
+	// 	// res.sendError("not yet");
+	// 	res.redirect("/wait.html");
+	// }
 
 	console.log(uname,pass);
 	if (uname && pass) {
@@ -33,6 +33,7 @@ exp.StudentLogin = async (req, res) => {
 		{
 			console.log(err);
 			console.log(result[0]);
+			res.redirect("/login.html");
 			return res.sendError(err);
 		}
 
@@ -42,6 +43,7 @@ exp.StudentLogin = async (req, res) => {
 		if(!bcrypt.compare(encrypt,pass))
 		{
 			console.log("wrong details");
+			res.redirect("/login.html");
 			return res.sendError(err);
 		}
 
@@ -49,6 +51,7 @@ exp.StudentLogin = async (req, res) => {
 		[err, result] = await to(db.query(qry, [uname]));
 		if (err) {
 			console.log(err);
+			res.redirect("/login.html");
 			return res.sendError(err);
 		}
 
@@ -58,16 +61,18 @@ exp.StudentLogin = async (req, res) => {
 		if(err)
 		{
 			console.log(err);
+			res.redirect("/login.html");
 			return res.sendError(err);
 		}
 
 		req.session.id = result[0]['id'];
 		req.session.reg = result[0]['reg_no'];
 		
-		//redirect to question paper page
+		res.redirect("/aiesec.html");
 		return res.sendSuccess(req.session.id, "Login Successfull");
 		
 	} else {
+		res.redirect("/login.html");
 		return res.sendError("no values inserted in uname and pass");
 
 	}
@@ -88,6 +93,7 @@ exp.AdminLogin = async (req, res) => {
 		if(err || !result[0])
 		{
 			console.log(err);
+			res.redirect("/adminlogin.html");
 			return res.sendError(err);
 		}
 
@@ -102,7 +108,7 @@ exp.AdminLogin = async (req, res) => {
 
 		console.log("correction");
 
-		//redirection to registration
+		res.redirect("/register.html");
 		return res.sendSuccess("yahoo",result[0]);
 		
 	}
@@ -132,6 +138,7 @@ exp.registration = async (req, res) => {
 		if(err)
 		{
 			console.log(err)
+			res.redirect("/register.html");
 			return res.sendError(err);
 
 		}
@@ -146,13 +153,16 @@ exp.registration = async (req, res) => {
 		);
 		if (err) {
 			console.log(err);
+			res.redirect("/register.html");
 			return res.sendError(err);
 		}
 
 		console.log("values inserted(registeration)");
+		res.redirect("/thankyou.html");
 		return res.sendSuccess(uname, "registered Successfully");
 	} else {
 		console.log("enter all details");
+		res.redirect("/register.html");
 		return res.sendError("enter all details");
 	}
 };

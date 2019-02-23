@@ -17,10 +17,12 @@ exp.quiz = async(req,res) => {
 	if(err)
 	{
 		console.log("query run problem");
+		res.redirect("/aiesec.html");
 		res.sendError(err);
 	}
 
 	//redirect to thank you page for completion of exam
+	res.redirect("/thankyou.html");
 	return res.sendSuccess("value inserted",result);
 }	
 
